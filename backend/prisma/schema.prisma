@@ -1,0 +1,35 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Quiz {
+  id          Int        @id @default(autoincrement())
+  title       String
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  questions   Question[]
+
+  @@map("quizzes")
+}
+
+model Question {
+  id             Int      @id @default(autoincrement())
+  type           String   
+  text           String
+  options        String[]
+  correctAnswer  String?  
+  correctAnswers String[] 
+  quizId         Int
+  quiz           Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@map("questions")
+}
